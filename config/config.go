@@ -1,6 +1,9 @@
 package config
 
-import "github.com/sakirsensoy/genv"
+import (
+	"github.com/sakirsensoy/genv"
+	_ "github.com/sakirsensoy/genv/dotenv/autoload"
+)
 
 type appConfig struct {
 	DbHost     string

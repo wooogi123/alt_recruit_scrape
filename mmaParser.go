@@ -7,13 +7,14 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 )
 
 type Recruit struct {
 	href    string
 	title   string
-	endAt   string
-	startAt string
+	endAt   time.Time
+	startAt time.Time
 }
 
 func PostToDoc(Url string, data url.Values) (doc *goquery.Document, err error) {
@@ -27,6 +28,7 @@ func PostToDoc(Url string, data url.Values) (doc *goquery.Document, err error) {
 }
 
 func ParseRecruits(Url string, size int) (recruits []Recruit) {
+	const pfmt = "2006-01-02"
 	for i := 1; i <= size; i++ {
 		doc, err := PostToDoc(Url, url.Values{
 			"ar_eopjong_gbcd":   {"11111"},
@@ -47,9 +49,15 @@ func ParseRecruits(Url string, size int) (recruits []Recruit) {
 					rec.href, _ = s.Find("a").Attr("href")
 					rec.title = s.Find("a").Text()
 				case 2:
-					rec.endAt = s.Text()
+					rec.endAt, err = time.Parse(pfmt, s.Text())
+					if err != nil {
+						log.Fatal(err)
+					}
 				case 3:
-					rec.startAt = s.Text()
+					rec.startAt, err = time.Parse(pfmt, s.Text())
+					if err != nil {
+						log.Fatal(err)
+					}
 				}
 			})
 			recruits = append(recruits, rec)
@@ -63,8 +71,8 @@ func PrintRecruits(recruits []Recruit) {
 		fmt.Printf("%d\n", i+1)
 		fmt.Printf("\tLink: %s\n", rec.href)
 		fmt.Printf("\tTitle: %s\n", rec.title)
-		fmt.Printf("\tEnd at: %s\n", rec.endAt)
-		fmt.Printf("\tStart at: %s\n", rec.startAt)
+		fmt.Printf("\tEnd at: %v\n", rec.endAt)
+		fmt.Printf("\tStart at: %v\n", rec.startAt)
 	}
 }
 
