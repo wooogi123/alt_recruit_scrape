@@ -1,7 +1,6 @@
 package libs
 
 import (
-	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
@@ -66,17 +65,7 @@ func ParseRecruits(Url string, size int) (recruits []Recruit) {
 	return
 }
 
-func PrintRecruits(recruits []Recruit) {
-	for i, rec := range recruits {
-		fmt.Printf("%d\n", i+1)
-		fmt.Printf("\tLink: %s\n", rec.href)
-		fmt.Printf("\tTitle: %s\n", rec.title)
-		fmt.Printf("\tEnd at: %v\n", rec.endAt)
-		fmt.Printf("\tStart at: %v\n", rec.startAt)
-	}
-}
-
-func MMAScrape() {
+func MMAScrape() (recruits []Recruit) {
 	Url := "https://work.mma.go.kr/caisBYIS/search/cygonggogeomsaek.do"
 	doc, err := PostToDoc(Url, url.Values{
 		"ar_eopjong_gbcd":   {"11111"},
@@ -93,6 +82,6 @@ func MMAScrape() {
 		log.Fatal(err)
 	}
 
-	recruits := ParseRecruits(Url, size)
-	PrintRecruits(recruits)
+	recruits = ParseRecruits(Url, size)
+	return
 }
