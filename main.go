@@ -3,9 +3,10 @@ package main
 import (
 	db "./db"
 	scrape "./scrape"
+	"fmt"
 )
 
 func main() {
 	db.InitDb()
-	db.InsertDb(scrape.MMAScrape())
+	fmt.Println(scrape.MMAScrape())
 }
