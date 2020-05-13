@@ -1,4 +1,4 @@
-package main
+package libs
 
 import (
 	"fmt"
@@ -95,8 +95,4 @@ func MMAScrape() {
 
 	recruits := ParseRecruits(Url, size)
 	PrintRecruits(recruits)
-}
-
-func main() {
-	MMAScrape()
 }
