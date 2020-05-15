@@ -1,4 +1,4 @@
-package libs
+package scrape
 
 import (
 	"github.com/PuerkitoBio/goquery"
@@ -10,10 +10,10 @@ import (
 )
 
 type Recruit struct {
-	href    string
-	title   string
-	endAt   time.Time
-	startAt time.Time
+	Href    string
+	Title   string
+	EndAt   time.Time
+	StartAt time.Time
 }
 
 func PostToDoc(Url string, data url.Values) (doc *goquery.Document, err error) {
@@ -45,15 +45,15 @@ func ParseRecruits(Url string, size int) (recruits []Recruit) {
 			s.Find("td").Each(func(i int, s *goquery.Selection) {
 				switch i {
 				case 0:
-					rec.href, _ = s.Find("a").Attr("href")
-					rec.title = s.Find("a").Text()
+					rec.Href, _ = s.Find("a").Attr("href")
+					rec.Title = s.Find("a").Text()
 				case 2:
-					rec.endAt, err = time.Parse(pfmt, s.Text())
+					rec.EndAt, err = time.Parse(pfmt, s.Text())
 					if err != nil {
 						log.Fatal(err)
 					}
 				case 3:
-					rec.startAt, err = time.Parse(pfmt, s.Text())
+					rec.StartAt, err = time.Parse(pfmt, s.Text())
 					if err != nil {
 						log.Fatal(err)
 					}
