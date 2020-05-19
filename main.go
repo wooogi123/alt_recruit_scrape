@@ -1,12 +1,11 @@
 package main
 
 import (
+	mail "./mail"
 	scrape "./scrape"
 	"database/sql"
-	"fmt"
 	_ "github.com/mattn/go-sqlite3"
 	"log"
-	"time"
 )
 
 func InsertDb(db *sql.DB, recruits []scrape.Recruit) {
@@ -23,28 +22,23 @@ func InsertDb(db *sql.DB, recruits []scrape.Recruit) {
 	}
 }
 
-func SelectDb(db *sql.DB) {
+func SelectDb(db *sql.DB) (recruits []scrape.Recruit) {
 	rows, err := db.Query("select * from MMA order by start_at desc")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var href string
-	var title string
-	var startAt time.Time
-	var endAt time.Time
+	var recruit scrape.Recruit
 
 	defer rows.Close()
 	for rows.Next() {
-		err = rows.Scan(&href, &title, &startAt, &endAt)
+		err = rows.Scan(&recruit.Href, &recruit.Title, &recruit.StartAt, &recruit.EndAt)
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("%v\t", href)
-		fmt.Printf("%v\t", title)
-		fmt.Printf("%v\t", startAt)
-		fmt.Printf("%v\n", endAt)
+		recruits = append(recruits, recruit)
 	}
+	return
 }
 
 func main() {
@@ -55,5 +49,6 @@ func main() {
 	defer db.Close()
 	db.Exec("create table if not exists MMA (href string, title string, start_at timestamp, end_at timestamp)")
 	InsertDb(db, scrape.MMAScrape())
-	SelectDb(db)
+	recruits := SelectDb(db)
+	mail.Send(recruits)
 }
