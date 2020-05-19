@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <ul>
+    {{ range . }}
+      <h3>{{ formatDate .StartAt }} ~ {{ formatDate .EndAt }}</h3>
+      <li>
+	<a href="https://work.mma.go.kr/{{ .Href }}">{{ .Title }}</a>
+      </li>
+    {{ end }}
+    <ul>
+  </body>
+</html>
