@@ -27,9 +27,12 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
+      env:
+        GOPATH: ${{ github.workspace }}
 
     - name: Run code
       run: go run main.go
       env:
+        GOPATH: ${{ github.workspace }}
         EMAIL: ${{ secrets.EMAIL }}
         PASSWORD: ${{ secrets.PASSWORD }}
