@@ -1,7 +1,6 @@
-package mail
+package main
 
 import (
-	scrape "../scrape"
 	"bytes"
 	"fmt"
 	"html/template"
@@ -11,13 +10,13 @@ import (
 	"time"
 )
 
-func Parse(recruits []scrape.Recruit) (body string) {
+func Parse(recruits []Recruit) (body string) {
 	fm := template.FuncMap{
 		"formatDate": func(t time.Time) string {
 			return fmt.Sprintf("%d-%02d-%02d", t.Year(), t.Month(), t.Day())
 		},
 	}
-	t := template.Must(template.New("template.html").Funcs(fm).ParseFiles("./mail/template.html"))
+	t := template.Must(template.New("template.html").Funcs(fm).ParseFiles("template.html"))
 	buf := new(bytes.Buffer)
 	err := t.Execute(buf, recruits)
 	if err != nil {
@@ -27,7 +26,7 @@ func Parse(recruits []scrape.Recruit) (body string) {
 	return
 }
 
-func Send(recruits []scrape.Recruit) {
+func Send(recruits []Recruit) {
 	from := os.Getenv("EMAIL")
 	pass := os.Getenv("PASSWORD")
 	to := os.Getenv("EMAIL")
