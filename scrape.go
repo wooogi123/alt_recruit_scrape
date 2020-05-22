@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"github.com/PuerkitoBio/goquery"
 	"log"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -14,6 +16,20 @@ type Recruit struct {
 	Title   string
 	EndAt   time.Time
 	StartAt time.Time
+}
+
+type Recruits []Recruit
+
+func (r Recruits) Len() int {
+	return len(r)
+}
+
+func (r Recruits) Less(i, j int) bool {
+	return r[j].StartAt.Before(r[i].StartAt)
+}
+
+func (r Recruits) Swap(i, j int) {
+	r[i], r[j] = r[j], r[i]
 }
 
 func PostToDoc(Url string, data url.Values) (doc *goquery.Document, err error) {
@@ -83,5 +99,6 @@ func MMAScrape() (recruits []Recruit) {
 	}
 
 	recruits = ParseRecruits(Url, size)
+	sort.Sort(Recruits(recruits))
 	return
 }
